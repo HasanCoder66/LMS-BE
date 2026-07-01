@@ -1,13 +1,45 @@
 import { errorResponse, successResponse } from "../responseHandlers/responseHandler.js"
 import userModel from "../models/User.js"
 
-const getUser = async (req, res) => {}
+const getUser = async (req, res, next) => {
+    console.log("id -->", req.params.id);
+    try {
+        // let userById = await userModel.findById(req.params.id);
+
+        // if(userById){
+
+        //     return successResponse(200, true, "user data milgaya..", userById, res)
+        // }
+        
+        // console.log(userById);
+
+        if(true){
+            throw "faaltu ka errror"
+        }else {
+            throw  "else wala errror"
+        }
+
+
+    } catch (error) {
+        // console.log(error);
+        next(error)
+        // return errorResponse(400, false, error.message, res)
+    }
+}
 
 const getAllUsers = async (req, res) => {
-    console.log("req query -->",req.query);
+    // console.log("req query -->", req.query);
     
+    // let query = {age : {$gte: req.query.ageStart, $lte:req.query.ageEnd}}
+
+    // let querytwo = {...req.query}
+
+    // if(req.query.ageStart && req.query.ageEnd){
+
+    // }
+
     try {
-        let allUsers = await userModel.find(req.query)
+        let allUsers = await userModel.find().limit(10).skip(2).sort("-age")
         console.log(allUsers);
 
         return successResponse(200, true, "users retrieve successfully", allUsers, res)
@@ -67,4 +99,4 @@ const deleteUser = async (req, res) => {
 }
 
 
-export {getAllUsers, updateUser, deleteUser}
+export {getAllUsers, updateUser, deleteUser, getUser}

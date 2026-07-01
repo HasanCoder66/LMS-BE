@@ -1,5 +1,5 @@
 import express from 'express'
-import { deleteUser, getAllUsers, updateUser } from '../controllers/userController.js'
+import { deleteUser, getAllUsers, getUser, updateUser } from '../controllers/userController.js'
 
 
 const userRoutes = express.Router()
@@ -8,6 +8,7 @@ const userRoutes = express.Router()
 userRoutes.get("/users", getAllUsers)
 userRoutes.put("/:id", updateUser)
 userRoutes.delete("/:id", deleteUser)
+userRoutes.get("/:id", getUser)
 
 
 // userRoutes.put("/", (req, res) => {
