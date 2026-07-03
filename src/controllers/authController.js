@@ -1,5 +1,6 @@
 import { errorResponse, successResponse } from "../responseHandlers/responseHandler.js"
 import User from '../models/User.js'
+import jwt from 'jsonwebtoken'
 
 const signup = async (req, res) => {
 
@@ -33,9 +34,29 @@ const signup = async (req, res) => {
 
 const login = async (req, res) => {
     try {
-        
+
+        const {email, password} = req.body;
+
+        console.log("email -->",email);
+        console.log("password -->",password);
+
+        const myUser = await User.findOne({email : email})
+
+        console.log("myUser -->",myUser);
+
+        if(!myUser) throw "user not found"
+
+
+        if(password != myUser.password) throw "invalid credentials"
+
+        const token = jwt.sign({id: myUser._id, email : myUser.email}, process.env.SECRET_KEY)
+        console.log(token);
+
+        successResponse(200, true, "user logged in successfully", token, res, )
+
     } catch (error) {
-       return errorResponse(400, false, error.message, res) 
+        console.log(error);
+       return errorResponse(400, false, error, res) 
     }
 }
 

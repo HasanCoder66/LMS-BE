@@ -1,5 +1,7 @@
 import { errorResponse, successResponse } from "../responseHandlers/responseHandler.js"
 import userModel from "../models/User.js"
+import jwt from 'jsonwebtoken'
+
 
 const getUser = async (req, res, next) => {
     console.log("id -->", req.params.id);
@@ -51,29 +53,57 @@ const getAllUsers = async (req, res) => {
 }
 
 
-const updateUser = async (req, res) => {
-    // console.log("req params -->",req.params.id);
+// const updateUser = async (req, res) => {
+//     // console.log("req params -->",req.params.id);
 
-//   console.log(req.params);
+// //   console.log(req.params);
   
   
     
+//     try {
+//     //       let findUser = await userModel.findById({_id : req.params.id})
+//     // console.log("saleem2 -->", findUser);
+    
+//     // if(!findUser){
+//     //     return errorResponse(404,false, "user not found", res)
+//     // }
+
+
+
+
+
+//   let updatedUser = await userModel.findByIdAndUpdate(req.params.id, req.body)
+
+//     console.log("update user -->",updateUser);
+    
+
+//         return successResponse(200, true, "user updated successfully", {}, res)
+//     } catch (error) {
+//         return errorResponse(400, false, error.message, res)
+//     }
+// }
+
+
+const updateUser = async (req, res, next) => {
     try {
-          let findUser = await userModel.findById({_id : req.params.id})
-    console.log("saleem2 -->", findUser);
-    
-    if(!findUser){
-        return errorResponse(404,false, "user not found", res)
-    }
 
-  let updatedUser = await userModel.findByIdAndUpdate(req.params.id, req.body)
+        const updatedDetails = req.body;
 
-    console.log("update user -->",updateUser);
-    
+        const token = req.headers.authorization.split(" ")[1]
+        // console.log(token);
 
-        return successResponse(200, true, "user updated successfully", {}, res)
+        const decode = jwt.verify(token, process.env.SECRET_KEY);
+
+        console.log(decode);
+
+        const updatedUser = await userModel.findByIdAndUpdate(decode.id, updatedDetails)
+        console.log("updated user -->",updatedUser);
+        return res.status(200).json({
+            status : true, 
+            message : "user updated successfully"
+        })
     } catch (error) {
-        return errorResponse(400, false, error.message, res)
+        next(error)
     }
 }
 
